@@ -1,0 +1,142 @@
+
+class String {
+
+    field int data;
+    field int length;
+    field int Max_len;
+
+    constructor String new(int maxLength) {
+        if (maxLength < 0) {
+            do Sys.error(14); 
+        }
+
+        if (maxLength > 0) {
+            let data = Memory.alloc(maxLength);
+        }
+        else {
+            let data = 0;
+        }
+        let length = 0;
+        let Max_len = maxLength;
+        return this;
+    }
+
+    function char newLine() {
+        return 128;
+    }
+
+    function char backSpace() {
+        return 129;
+    }
+
+    function char doubleQuote() {
+        return 34;
+    }
+
+    
+    method void dispose() {
+        if (Max_len > 0) {
+            do Memory.deAlloc(data);
+        }
+        return;
+    }
+
+    
+    method int length() {
+        return length;
+    }
+
+
+    method char charAt(int j) {
+        if ((j < 0) | (~(j < length))) {
+            do Sys.error(15); 
+        }
+
+        return data[j];
+    }
+
+    
+    method void setCharAt(int j, char c) {
+        if ((j < 0) | (~(j < length))) {
+            do Sys.error(16); 
+        }
+
+        let data[j] = c;
+        return;
+    }
+
+    method String appendChar(char c) {
+        if (length = Max_len) {
+            do Sys.error(17); 
+        }
+
+        let data[length] = c;
+        let length = length + 1;
+        return this;
+    }
+
+
+    method void eraseLastChar() {
+        if (length = 0) {
+            do Sys.error(18); 
+        }
+
+        let length = length - 1;
+        return;
+    }
+
+    
+    method int intValue() {
+        var int i, res;
+        let res = 0;
+
+        if (data[0] = 45) { 
+            let i = 1;      
+        } else {
+            let i = 0;
+        }
+
+        while (i < length) {
+            let res = (10 * res) + (data[i] - 48);
+            let i = i + 1;
+        }
+
+        if (data[0] = 45) {
+            return -res;
+        }
+        return res;
+    }
+
+    method void setInt(int number) {
+        if (number < 0) {
+            let data[0] = 45; // ascii('-') == 45
+            let length = 1;
+            do setIntHelper(-number);
+        }
+        else {
+            let length = 0;
+            do setIntHelper(number);
+        }
+
+        return;
+    }
+
+    method void setIntHelper(int number) {
+        var int last_digit, c;
+        let last_digit = number - (10*(number/10));
+        let c = last_digit + 48;
+
+        if (number > 10) {
+            do setIntHelper(number/10);
+        }
+
+        if (~(length < Max_len)) {
+            do Sys.error(19); 
+        }
+        do appendChar(c);
+
+        return;
+
+    }
+
+}

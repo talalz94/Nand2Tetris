@@ -1,0 +1,170 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Math.jack
+
+/**
+ * A basic math library.
+ */
+class Math {
+    static Array powerTwo;
+    
+    /** Initializes the library. */
+    function void init() {
+        
+	let powerTwo = Array.new(16);
+    	let powerTwo[0]  = 1;
+    	let powerTwo[1]  = 2;
+    	let powerTwo[2]  = 4;
+    	let powerTwo[3]  = 8;
+    	let powerTwo[4]  = 16;
+    	let powerTwo[5]  = 32;
+    	let powerTwo[6]  = 64;
+    	let powerTwo[7]  = 128;
+    	let powerTwo[8]  = 256;
+        let powerTwo[9]  = 512;
+    	let powerTwo[10] = 1024;
+    	let powerTwo[11] = 2048;
+    	let powerTwo[12] = 4096;
+    	let powerTwo[13] = 8192;
+    	let powerTwo[14] = 16384;
+    	let powerTwo[15] = 16384 + 16384; 
+
+	return;
+    }
+
+    
+    /** Returns the absolute value of x. */
+    function int abs(int x) {
+
+        if( x < 0 ) {
+            let x = -x;
+        }
+        return x;
+    }
+
+    /** Returns the product of x and y. */
+    function int multiply(int x, int y) {
+        var int sum, xShift, i;
+
+    	if (x < 0) {                         
+      		return -Math.multiply(-x, y);        //to avoid negative numbers
+    	}
+
+	if (y < 0) {
+      		return -Math.multiply(x, -y);
+    	}
+
+    	let i = 0;
+    	let sum = 0;
+    	let xShift = x;
+
+    	while (i < 16) {               
+
+      		if (powerTwo[i] & y) {
+        		let sum = sum + xShift;
+      		}
+
+      		let xShift = xShift + xShift;
+
+      		let i = i + 1;
+    	}
+
+    	return sum;
+    }
+    
+    /** Returns the integer part of x/y. */
+    function int divide(int x, int y) {
+
+	
+        var int q, answer, xneg, yneg;
+
+	if (y = 0) {
+
+      		do Sys.error(4); // Division by zero error!
+   	}
+
+        
+        let xneg = x < 0;
+        let yneg = y < 0;
+
+        let x = Math.abs(x);
+        let y = Math.abs(y);
+
+        if( y > x ) {
+
+            return 0;
+        }
+
+        let q = Math.divide(x, y+y);
+
+        if( x-(2*q*y) < y ) {
+
+            let answer = q+q;
+        }
+
+        else {
+
+            let answer = q+q+1;
+        }
+        
+        if( xneg = yneg ) {
+
+            return answer;
+        }
+
+        else {
+
+            return -answer;
+        }
+    }
+    
+    
+
+    /** Returns the integer part of the square root of x. */
+    function int sqrt(int x) {
+
+        var int i, j, temp1, temp2;
+        
+        let j = 0;
+        let i = 7;     
+ 
+        while( ~(i < 0) ) {
+
+            let temp1 = j + powerTwo[i];
+
+            let temp2 = temp1 * temp1;
+
+            if( ~(temp2 > x) & (temp2 > 0) ) {  
+  
+                let j = temp1;
+            }
+            let i = i - 1;
+        }
+        return j;
+    }
+
+    /** Returns the greater number. */
+    function int max(int a, int b) {
+        if( a > b ) {
+            return a;
+        }
+        else {
+            return b;
+        }
+    }
+
+    /** Returns the smaller number. */
+    function int min(int a, int b) {
+        if( a < b ) {
+            return a;
+        }
+        else {
+            return b;
+        }
+    }
+
+    function int powerTwo(int i) {
+        return powerTwo[i];
+    }
+}

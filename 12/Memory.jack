@@ -1,0 +1,116 @@
+
+class Memory {
+
+
+    static int heap_base;
+    static int heap_end;
+    static int free_list;
+
+    function void init() {
+        let heap_base = 2048;
+        let heap_end = 16383;
+
+        let free_list = heap_base;
+        let free_list[0] = heap_end - heap_base;
+        let free_list[1] = null; // Next pointer.
+        return;
+    }
+
+    
+    function int peek(int address) {
+        return address[0];
+    }
+
+
+    function void poke(int address, int value) {
+        let address[0] = value;
+        return;
+    }
+
+    function int alloc(int size) {
+        if (size < 0) {
+            do Sys.error(5); 
+        }
+
+        return Memory.allocFirst(size);
+    }
+
+    
+    function void deAlloc(int object) {
+        var Array previous_block, current_block;
+        var Array new_block;
+        var boolean gap_found;
+
+        let new_block = object - 1; 
+
+        if (free_list = 0) { 
+            let free_list = new_block;
+            let free_list[1] = 0;
+            return;
+        }
+        
+        let previous_block = free_list;
+        let current_block = free_list[1];
+        let gap_found = false;
+
+        while ((~(current_block = 0)) & (~gap_found)) {
+            if (~(current_block[1] = 0)) {
+                if (new_block < current_block[1]) {
+                    let previous_block = current_block;
+                    let current_block = current_block[1];
+                }
+            }
+            else {
+                let gap_found = true;
+            }
+        }
+
+        // Inserting the deallocated block in that gap:
+        let previous_block[1] = new_block;
+        let new_block[1] = current_block;
+
+        return;
+    }
+
+    function int allocFirst(int size) {
+        var Array previous_block, current_block;
+        var Array new_block;
+
+        let previous_block = null;
+        let current_block = free_list;
+
+        while (~(current_block = 0)) {
+
+            if ((current_block[0] - 1) = size) { 
+                do Memory.deleteBlock(previous_block, current_block);
+                return current_block + 1;
+            }
+
+            if (current_block[0] > (size + 2)) {
+                let current_block[(current_block[0] - 1) - size] = size + 1;
+                let new_block = current_block + current_block[0] - size;
+                let current_block[0] = current_block[0] - size - 1;
+                return new_block;
+            }
+
+            // Go to the next block:
+            let previous_block = current_block;
+            let current_block = current_block[1];
+        }
+
+
+        do Sys.error(6);
+        return null;
+    }
+
+    function void deleteBlock(int previous_block, int current_block) {
+        if (previous_block = 0) {
+            let free_list = current_block[1];   
+        }
+        else {
+            let previous_block[1] = current_block[1]; 
+        }
+
+        return;
+    }
+}

@@ -1,0 +1,15 @@
+
+
+/** Initializes a new Air-Hockey game and starts running it. */
+class Main {
+    function void main() {
+        var AirHockey game;
+        let game = AirHockey.new();
+        do game.run();
+        do game.dispose();
+	
+
+
+        return;
+    }
+}

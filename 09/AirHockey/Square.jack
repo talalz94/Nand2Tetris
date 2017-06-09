@@ -1,0 +1,76 @@
+//The class for the paddle used in this game.
+class Square {
+
+    // Location on the screen
+    field int x, y;
+
+    // The size of the paddle
+    field int size;
+
+    /** Constructs a new paddle with a given location and size. */
+    constructor Square new(int Ax, int Ay) {
+        let x = Ax;
+        let y = Ay;
+
+        do draw();
+
+        return this;
+    }
+
+    /** Deallocates the object's memory. */
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method int getx(){
+	
+	return x;
+    }
+	
+    method int gety(){
+	
+	return y;
+    }
+
+    /** Draws the paddle on the screen. */
+    method void draw() {
+        do Screen.setColor(true);
+        do Screen.drawRectangle(x, y, x+4,y+50);
+        return;
+    }
+
+    /** Erases the square from the screen. */
+    method void erase() {
+        do Screen.setColor(false);
+        do Screen.drawRectangle(x, y, x+4,y+50);
+        return;
+    }
+
+    
+
+    /** Moves paddle up by 1 pixels. */
+    method void moveUp() {
+        if (y > 5) {
+            do Screen.setColor(false);
+            do Screen.drawRectangle(x, y, x+4,y+50);
+            let y = y - 1;
+            do Screen.setColor(true);
+            do Screen.drawRectangle(x, y, x+4,y+50);
+        }
+        return;
+    }
+
+    /** Moves paddle down by 1 pixels. */
+    method void moveDown() {
+        if ((y + 50) < 248) {
+            do Screen.setColor(false);
+            do Screen.drawRectangle(x, y, x+4,y+50);
+            let y = y + 1;
+            do Screen.setColor(true);
+            do Screen.drawRectangle(x, y, x+4,y+50);
+        }
+        return;
+    }
+
+}

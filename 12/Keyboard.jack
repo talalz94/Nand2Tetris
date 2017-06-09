@@ -1,0 +1,116 @@
+
+class Keyboard {
+    static Array keyboard;
+    static int i;
+    static char nextLine;
+    
+    /** Initializes the keyboard. */
+    function void init() {
+        let keyboard = 24576;
+        return;
+    } 
+
+    /**
+     * Returns the ASCII code (as char) of the currently pressed key,
+     * or 0 if no key is currently pressed.
+     * Recognizes all ASCII characters, as well as the following extension
+     * of action keys:
+     * New line = 128 = String.newline()
+     * Backspace = 129 = String.backspace()
+     * Left Arrow = 130
+     * Up Arrow = 131
+     * Right Arrow = 132
+     * Down Arrow = 133
+     * Home = 134
+     * End = 135
+     * Page Up = 136
+     * Page Down = 137
+     * Insert = 138
+     * Delete = 139
+     * ESC = 140
+     * F1 - F12 = 141 - 152
+     */
+    function char keyPressed() {
+        return Memory.peek(24576);
+    }
+
+    /**								
+     * Reads the next character from the keyboard.
+     * waits until a key is pressed and then released, then echoes
+     * the key to the screen, and returns the value of the pressed key.
+     */
+    function char readChar() {
+        var char crc;
+
+	let crc = Keyboard.rCHelper(); //Helper for readChar()
+
+	do Output.printChar(crc);
+	return crc;
+    }
+
+    function char rCHelper() {
+	var char ck;
+        while(Keyboard.keyPressed() = 0){}
+        let ck = Keyboard.keyPressed();
+
+        while(~(Keyboard.keyPressed() = 0)){}
+        return ck;
+    }
+
+    /**								
+     * Prints the message on the screen, reads the next line
+     * (until a newline character) from the keyboard, and returns its value.
+     */
+    function String readLine(String message) {
+        var String line;
+
+	var int i;
+
+	var char crc;
+	
+	do Output.printString(message);
+	
+	let line = String.new(128);
+	let i = 0;
+	let crc = Keyboard.rCHelper();
+	while(~(crc = String.newLine())){
+		if( crc = String.backSpace()){
+			if (i > 0){
+				let i = i - 1;
+				do line.eraseLastChar();
+				do Output.printChar(50);
+				do Output.backSpace();
+				
+			}
+		}
+		else {
+			if( (crc<127) & (crc > 32)){
+				if(i < 128){
+					let i = i+1;
+					do line.appendChar(crc);
+					do Output.printChar(crc);
+				}
+			}
+		}
+		let crc = Keyboard.rCHelper();
+	}
+	do Output.printChar(50);
+
+	do Output.println();
+
+	return line;
+   }   
+
+    /**								
+     * Prints the message on the screen, reads the next line
+     * (until a newline character) from the keyboard, and returns its
+     * integer value (until the first non numeric character).
+     */
+    function int readInt(String message) {
+        var String string;
+        
+        let string = Keyboard.readLine(message);
+
+        return string.intValue();
+    }
+}

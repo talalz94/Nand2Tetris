@@ -1,0 +1,248 @@
+//Creates a game of Airhockey, a two player game with the objective to score the ball towards your opponents side!
+
+class AirHockey {
+   field Square square;  // the paddle of player1
+   field Square square2; // the paddle of player2
+   field Ball ball;      // the ball
+   field boolean balldir;
+   field int bounce;
+   field int select;
+   field boolean exit;
+   field int direction;  
+                        
+   field int count;
+
+   /** Constructs a new Square Game. */
+   constructor AirHockey new() {
+
+      do menu();
+
+      
+      do Screen.clearScreen();
+      let square = Square.new(15, 100);
+      let square2 = Square.new(491, 100);
+      let ball = Ball.new(250,120,4);
+      let balldir = true;
+      let direction = 0;  // initial state is no movement
+      let count = 0;
+      let bounce = 0;
+      let select = 0;
+      let exit = false;
+      
+
+
+      
+      	      
+
+      return this;
+   }
+
+   /** Disposes this game. */
+   method void dispose() {
+      do square.dispose();
+      do Memory.deAlloc(this);
+      return;
+   }
+
+    //The function for calling Menu
+    method void menu() {
+      
+      var char mkey;
+      var boolean quit;
+      let quit = false;
+      
+      do Screen.clearScreen();
+      do mdrawLines();
+      do mainMenu();
+      
+
+    
+      while (~quit) {
+
+	//do Output.printString("Air Hockey");
+	while (mkey = 0) {
+            let mkey = Keyboard.keyPressed();
+            	   
+         }
+         if (mkey = 80)  { let quit = true; } // p key
+         if (mkey = 73)  { let select = 1; } // i key
+	 if (mkey = 66)  { let select = 0; } // b key
+         if (mkey = 81)  { let quit = true;  }// q key
+
+	 while (~(mkey = 0)) {
+             let mkey = Keyboard.keyPressed();
+             do menuselect();
+	     
+         }
+ 
+      }
+	 
+      return;
+   }
+
+    //Creates MainMenu 
+    method void mainMenu() {
+       
+      do Screen.clearScreen();
+      do mdrawLines();
+      do Output.moveCursor(2,26);
+      do Output.printString("Air Hockey");
+      do Output.moveCursor(7,22);
+      do Output.printString("Press 'P' to Play");
+      do Output.moveCursor(9,22);
+      do Output.printString("Press 'I' for Instructions");
+      do Output.moveCursor(11,22);
+      do Output.printString("Press 'Q' twice to Exit");
+
+      return;
+    }
+
+
+   /** Moves the square in the current direction. */
+   method void moveSquare() {
+      if (direction = 1) { do square.moveUp(); }
+      if (direction = 2) { do square.moveDown(); }
+      if (direction = 3) { do square2.moveDown(); }
+      if (direction = 4) { do square2.moveUp(); }
+      //do Sys.wait(5);  // delays the next movement
+      return;
+   }
+
+   //Provides different options in the mainmenu
+   method void menuselect() {
+      if (select = 0) { do mainMenu(); }
+      if (select = 1) { do instructions(); }
+      if (select = 2) { do run(); }
+      do Sys.wait(5);  // delays the next movement
+      return;
+   }
+
+   //Writes instructions for the game.
+   method void instructions(){
+
+      do Screen.clearScreen();
+      do mdrawLines();
+
+      do Output.moveCursor(2,10);
+      do Output.printString("Welcome to Air Hockey, a two-player game!");
+      do Output.moveCursor(7,10);
+      do Output.printString("The goal of this game is to get the ball");
+      do Output.moveCursor(9,10);
+      do Output.printString("behind the other player's paddle.");
+      do Output.moveCursor(11,10);
+      do Output.printString("Use keys 'UP'DOWN' and 'W''S' to control");
+      do Output.moveCursor(13,10);
+      do Output.printString("your paddle that can only move vertically.");
+      do Output.moveCursor(15,10);
+      do Output.printString("First Player to score a goal, wins!");	
+      do Output.moveCursor(17,10);
+      do Output.printString("Hit the ball from edges to make it change its angle.");
+      do Output.moveCursor(19,10);
+      do Output.printString("Press 'P' to Play, 'B' to go back to the");
+      do Output.moveCursor(21,10);
+      do Output.printString("MainMenu or 'Q' twice to Quit.");
+      return;
+   }
+
+   //Draws boundary lines
+   method void drawLines() {
+
+      do Screen.drawLine(254,0,254,255);
+      do Screen.drawLine(9,0,9,255);
+      do Screen.drawLine(502,0,502,255);
+      do Screen.drawLine(0,5,511,5);
+      do Screen.drawLine(0,248,511,248);
+      return;
+   }
+
+   //Draws boundary lines for menu
+   method void mdrawLines() {
+
+      
+      do Screen.drawLine(9,0,9,255);
+      do Screen.drawLine(502,0,502,255);
+      do Screen.drawLine(0,5,511,5);
+      do Screen.drawLine(0,248,511,248);
+      return;
+   }
+
+   //Moves the ball in the game, provides conditions for bounce and win/lose!
+   method void moveBall() {
+	
+      do drawLines();
+	
+      if ((ball.getx()) > 500) { do Output.moveCursor(21,20);
+      do Output.printString("Player 1 SCORES!."); let exit = true; }
+      if ((ball.getx()) < 20) { do Output.moveCursor(21,10);
+      do Output.printString("Player 2 SCORES!"); let exit = true; }	
+
+      if ((ball.gety()) > 248) { let bounce = -1; } 
+      if ((ball.gety()) < 5) { let bounce = 1; }
+
+     // if ((ball.getx() = 24) & (ball.gety() > square.gety()) & (ball.gety() < (square.gety() + 50))) { let balldir = true ; }
+
+      if ((ball.getx() = 24) & (ball.gety() > square.gety()) & (ball.gety() < (square.gety() + 11))) { let balldir = true ; let bounce = -1; }
+      if ((ball.getx() = 24) & (ball.gety() > (square.gety() + 10 )) & (ball.gety() < (square.gety() + 40))) { let balldir = true ; let bounce = 0; }
+      if ((ball.getx() = 24) & (ball.gety() > (square.gety() + 39 )) & (ball.gety() < (square.gety() + 50))) { let balldir = true ; let bounce = 1; }
+
+     // if ((ball.getx() = 486) & (ball.gety() > square2.gety()) & (ball.gety() < (square2.gety() + 50))) { let balldir = false; }
+
+      if ((ball.getx() = 486) & (ball.gety() > square2.gety()) & (ball.gety() < (square2.gety() + 11))) { let balldir = false ; let bounce = -1; }
+      if ((ball.getx() = 486) & (ball.gety() > (square2.gety() + 10 )) & (ball.gety() < (square2.gety() + 40))) { let balldir = false ; let bounce = 0; }
+      if ((ball.getx() = 486) & (ball.gety() > (square2.gety() + 39 )) & (ball.gety() < (square2.gety() + 50))) { let balldir = false ; let bounce = 1; }
+
+   
+      if (balldir) { do ball.moveRight(bounce); }
+      if (~(balldir)) { do ball.moveLeft(bounce); }
+     
+
+      do Sys.wait(3);  // delays the next movement
+      return;
+   }
+
+   
+   /** Runs the game: handles the user's inputs and moves the square accordingly */
+   method void run() {
+
+      
+
+      var char key;  // the key currently pressed by the user
+      //var boolean exit;
+      //let exit = false;
+      
+
+    
+      while (~exit) {
+	 
+    	 
+	 
+
+         // waits for a key to be pressed
+         while (key = 0) {
+            let key = Keyboard.keyPressed();
+            do moveBall();
+	   
+         }
+         if (key = 81)  { let exit = true; }     // q key
+         if (key = 131) { let direction = 1; }   // up arrow
+         if (key = 133) { let direction = 2; }   // down arrow
+         if (key = 83) { let direction = 3; }   // s
+         if (key = 87) { let direction = 4; }   // w
+
+	 
+
+         // waits for the key to be released
+
+         while (~(key = 0)) {
+            let key = Keyboard.keyPressed();
+            do moveSquare();
+	    do moveBall();
+         }
+
+     } // while
+     return;
+   }
+}
+
+
+

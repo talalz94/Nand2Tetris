@@ -1,0 +1,11 @@
+function Main.main 1
+call AirHockey.new 0
+pop local 0
+push local 0
+call AirHockey.run 1
+pop temp 0
+push local 0
+call AirHockey.dispose 1
+pop temp 0
+push constant 0
+return
